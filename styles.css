@@ -1,0 +1,46 @@
+.button-container{
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    justify-content: center;
+}
+.button{
+    flex: 1;
+    padding: 8px;;
+    font-size: 2em;
+    /* color: #fff; */
+    /* border-color: #F0EAD6; */
+}
+#reset{
+    background: rgb(255, 11, 3);
+}
+#promptPlayer{
+    background-color: rgb(87, 206, 87);
+}
+#addFiveRounds{
+    background-color: blueviolet;
+}
+.mobile{
+    display: none;
+}
+#footer{
+    position: fixed;
+    bottom:0;
+}
+@media only screen and (max-width: 500px) {
+    .button-container{
+        flex-direction: column;
+    }
+    .button{
+        border-radius: 16px;
+    }
+    .mobile{
+        display: block;
+        font-size: 22px;
+        text-align: center;
+        padding: 1em;
+    }
+    .hideme{
+        display: none;
+    }
+}
