@@ -7,8 +7,10 @@
 // Step 5: Write the logic to play a single round
 
 // target element buttons 
-// addEventListener('click',#promptPlayer) 
-// addEventListener('click',#reset) 
+document.getElementById("promptPlayer").addEventListener("click", addOneRound);
+document.getElementById("reset").addEventListener("click", resetOutcomes);
+document.getElementById("addFiveRounds").addEventListener("click", addFiveRounds);
+
 
 let computerChoice='';
 let playerChoice='';
@@ -18,6 +20,16 @@ let drawOutcome = 0;
 let roundsPlayed = 0;
 let roundCredits = 1;
 
+function addFiveRounds() {
+        roundCredits=roundCredits+5;   
+        console.log(`added 5 credits`);
+        runGame();
+}
+function addOneRound() {
+        roundCredits=roundCredits+1;   
+        console.log(`added 1 credit`);
+        runGame();
+}
 function cleanChoice(choice='') {
         // console.log(`cleanedChoice() original is "${choice}" result will be "${choice.toLowerCase()}"`);
         // console.log(`cleanedChoice()`);
@@ -36,7 +48,7 @@ function isValidChoice(choice) {
             // console.log("isValidChoice(): TRUE(scissors)");
             return true;
         default:
-            console.log("isValidChoice(): FALSE");
+            // console.log("isValidChoice(): FALSE");
             // alert("Invalid input detected, please check spelling of rock paper scissors")
             return false;
     }
@@ -48,19 +60,19 @@ function generateRand(number) {
 function genComputerChoice() {
     switch (generateRand(3)) {
         case 1:
-            console.log("genComputerChoice(): rock");
+            console.log("Computer chose: rock");
             computerChoice='rock';
             break; 
         case 2:
-            console.log("genComputerChoice(): paper");
+            console.log("Computer chose: paper");
             computerChoice='paper';
             break;
         case 3:
-            console.log("genComputerChoice(): scissors");
+            console.log("Computer chose: scissors");
             computerChoice='scissors';
             break;
         default:
-            console.log("genComputerChoice(): Error set to ''");
+            console.log("Computer chose: Error set to ''");
             computerChoice='';
     }
 }
@@ -74,12 +86,12 @@ function resetPlayerChoice() {
 function promptPlayer() {
     resetPlayerChoice();
     let playerPrompt = prompt("Choose One:\n        rock paper scissors");    
-    console.log(`::initial prompt logged ${playerPrompt}`);
+    // console.log(`::initial prompt logged ${playerPrompt}`);
     let tempCleaned = cleanChoice(playerPrompt);
     if (isValidChoice(tempCleaned)) {
         playerChoice= tempCleaned;
         // console.log(`!!SUCCESS!! set playerChoice`);
-        console.log(`::playerChoice ${playerChoice} | computerChoice ${computerChoice}`);
+        // console.log(`::playerChoice ${playerChoice} | computerChoice ${computerChoice}`);
         // console.log(`::playerWin ${playerWin} | computerWin ${computerWin} | drawOutcome = ${drawOutcome}`);
         console.log(`-- proceed to eval --`);
         return;
@@ -94,37 +106,47 @@ function promptPlayer() {
 
 function evaluateRound(cChoice,pChoice) {
     // console.log(`pChoice ${pChoice} | cChoice ${cChoice}`);
-    if(cChoice==pChoice){
-        drawOutcome++;
-        roundsPlayed++;
-        console.log(`Draw`);
-        checkOutcomeVariance(playerWin,computerWin,drawOutcome,roundsPlayed);
-        endRound();
-        return;
+    switch (true) {
+        case (cChoice=='rock' && pChoice=='paper'):
+        case (cChoice=='paper' && pChoice=='scissors'):
+        case (cChoice=='scissors' && pChoice=='rock'):
+            playerWin++;
+            console.log(`Player Wins!!`);
+            break;
+        case (cChoice=='rock' && pChoice=='scissors'):
+        case (cChoice=='paper' && pChoice=='rock'):
+        case (cChoice=='scissors' && pChoice=='paper'):      
+            computerWin++;
+            console.log(`Computer Wins..`);    
+            break;
+        case (cChoice==pChoice):      
+            drawOutcome++;
+            console.log(`Draw`);
+            break;
+        default:
+            console.log(`::ERROR:: something went wrong in evaluateRound()`);
+            break;
     }
-    if (cChoice=='rock' && pChoice=='paper' ||
-        cChoice=='paper' && pChoice=='scissors' ||
-        cChoice=='scissors' && pChoice=='rock')
-        {
-        playerWin++;
-        roundsPlayed++;
-        console.log(`Player Wins`);
-        checkOutcomeVariance(playerWin,computerWin,drawOutcome,roundsPlayed);
-        endRound();
-        return; 
-    } 
-    if (cChoice=='rock' && pChoice=='scissors' ||
-        cChoice=='paper' && pChoice=='rock' ||
-        cChoice=='scissors' && pChoice=='paper')
-        {
-        computerWin++;
-        roundsPlayed++;
-        console.log(`Computer Wins`);
-        checkOutcomeVariance();
-        endRound();
-        return;
-    } 
-    // console.log(`::end of single game function ***THIS SHOULD NOT RUN`);   //CATCH
+    // if(cChoice==pChoice){
+    //     drawOutcome++;
+    //     console.log(`Draw`);
+    // }
+    // if (cChoice=='rock' && pChoice=='paper' ||
+    //     cChoice=='paper' && pChoice=='scissors' ||
+    //     cChoice=='scissors' && pChoice=='rock'){
+    //     playerWin++;
+    //     console.log(`Player Wins`);
+    // } 
+    // if (cChoice=='rock' && pChoice=='scissors' ||
+    //     cChoice=='paper' && pChoice=='rock' ||
+    //     cChoice=='scissors' && pChoice=='paper'){
+    //     computerWin++;
+    //     console.log(`Computer Wins`);
+    // } 
+    roundsPlayed++;
+    roundCredits--;
+    checkOutcomeVariance();
+    logRound(); //just a logging statement doesn't change any values
     return ;
 }
 //silent anti-cheat
@@ -149,30 +171,50 @@ function resetOutcomes() {
     playerChoice='';
     computerChoice='';
     roundCredits=0;
-    console.log(`outcomes reset`);
+    console.log(`::outcomes reset`);
 }
 
-function endRound() {
-    if (roundCredits==0) {
-        return
-    }
-    if (roundCredits>0) {
-        roundCredits--;  //leaving decrement here lets errors occur on new rounds without changing current structure
-        console.log(`::END GAME::
+function logRound() {
+        console.log(`::Round Results::
             ROUNDS PLAYED: ${roundsPlayed}
             playerWin ${playerWin} | computerWin ${computerWin} | drawOutcome = ${drawOutcome} | credits = ${roundCredits}`);    
-        newRound();
+}
+function checkCredits() {
+    if (roundCredits==0) {
+        console.log(`CREDITS = ${roundCredits}`);
+        // console.log(`::Out of Credits::
+        //     ROUNDS PLAYED: ${roundsPlayed}
+        //     playerWin ${playerWin} | computerWin ${computerWin} | drawOutcome = ${drawOutcome} | credits = ${roundCredits}`);    
+        return false;
     }
-
+    else if (roundCredits>0) {
+        console.log(`CREDITS = ${roundCredits}`);
+        return true;
+    }
+    console.log(`::ERROR:: checkCredits() FAILED`); //THIS SHOULD NOT TRIGGER
+    checkOutcomeVariance() //run anti-cheat
+    return false;
 }
 
 //**  should continue as long as roundCredits > 0 **//
 function newRound() {
     console.log(`hello new round. Credit: ${roundCredits}`);
 }
+
+function runGame() {
+    if(!checkCredits()){
+        return;
+    }
+    genComputerChoice();
+    promptPlayer();
+    evaluateRound(computerChoice,playerChoice); 
+    runGame(); //recursive call to allow for multiple games
+}
+
 // GAME START
-genComputerChoice();
-promptPlayer();
-evaluateRound(computerChoice,playerChoice); 
+// genComputerChoice();
+// promptPlayer();
+// evaluateRound(computerChoice,playerChoice); 
+runGame();
 
 // resetOutcomes();
