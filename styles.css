@@ -1,0 +1,22 @@
+.button-container{
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    justify-content: center;
+}
+.button{
+    flex: 1;
+    padding: 8px;;
+    font-size: 2em;
+    /* color: #F3E5AB; */
+    /* border-color: #F0EAD6; */
+}
+#reset{
+    background: rgb(255, 11, 3)
+}
+#promptPlayer{
+    background-color: rgb(87, 206, 87);
+}
+#addFiveRounds{
+    background-color: blueviolet;
+}

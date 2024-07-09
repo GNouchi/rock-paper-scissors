@@ -7,23 +7,20 @@ Step 4: Declare the players score variables
 Step 5: Write the logic to play a single round
 
 Rock Paper Scissors [0,1,2] index position
-let computerChoice;
-let playerChoice;
+let computerChoice, playerChoice = '';
 let outcome
 {
     [playerChoice,computerChoice,match],
     [playerChoice,computerChoice,match]
 };
-match function: if match then return 'draw' else exit
-evaluate function: match(); switch
 
-resetAllChoice function;
-promptPlayerChoice; 
 
 if computerChoice = 'rock' && playerChoice = 'paper' then log outcome win
 if computerChoice = 'rock' && playerChoice = 'scissors' then log outcome lose
+etc..
 
 or
+
 setChoice(choice){
     if choice==='rock'{
         return 0;
@@ -75,7 +72,32 @@ function setComputerChoice(computerInput='', choices=[null,null]){
     return choices;
 }
 
+function evalPlayerChoice(choice){
+    if(choice=='rock'||choice=='paper'||choice=='scissors'){
+        return true;
+    }
+    return false;
+}
 
+function convertToI(text) {
+    if (text == 'rock') {
+        return 0;
+    }
+    if (text == 'paper') {
+        return 1;
+    }
+    if (text == 'scissors') {
+        return 2;
+    }
+    else{
+        console.log('***ERROR: FAILED index conversion');
+        return;
+    }
+    console.log(`this should not run`);
+}
+
+resetAllChoice function;
+promptPlayerChoice; 
 
 
 resetChoices() ->
