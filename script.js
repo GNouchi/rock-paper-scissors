@@ -7,9 +7,9 @@
 // Step 5: Write the logic to play a single round
 
 // target element buttons 
-document.getElementById("promptPlayer").addEventListener("click", addOneRound);
+document.getElementById("addOneCredit").addEventListener("click", addOneRound);
 document.getElementById("reset").addEventListener("click", resetOutcomes);
-document.getElementById("addFiveRounds").addEventListener("click", addFiveRounds);
+document.getElementById("addFiveCredits").addEventListener("click", addFiveCredits);
 
 
 let computerChoice='';
@@ -19,21 +19,19 @@ let computerWin = 0;
 let drawOutcome = 0;
 let roundsPlayed = 0;
 let roundCredits = 1;
+let winner = '';
 
-function addFiveRounds() {
+function addFiveCredits() {
         roundCredits=roundCredits+5;   
-        console.log(`added 5 credits`);
-        runGame();
+        if (roundsPlayed > 0) {updateResults();}
+        // console.log(`+5 credits | Credits: ${roundCredits}`);
 }
 function addOneRound() {
         roundCredits=roundCredits+1;   
-        console.log(`added 1 credit`);
-        runGame();
+        if (roundsPlayed > 0) {updateResults();}
+        // console.log(`+1 credit | Credits: ${roundCredits}`);
 }
-function cleanChoice(choice='') {
-        choice = choice.toLowerCase();
-        return choice;
-}
+
 function isValidChoice(choice) {
     switch (choice) {
         case 'rock':
@@ -70,21 +68,10 @@ function genComputerChoice() {
     }
 }
 function resetPlayerChoice() {
+    // console.log(`--Resetting player choice--`);
     return playerChoice='';
 }
-function promptPlayer() {
-    resetPlayerChoice();
-    let playerPrompt = prompt("Choose One:\n        rock paper scissors");    
-    let tempCleaned = cleanChoice(playerPrompt);
-    if (isValidChoice(tempCleaned)) {
-        playerChoice= tempCleaned;
-        return;
-    }  
-    else {
-        console.log("*****FAILED validity check - REPROMPT*****");
-        promptPlayer();
-     }
-}
+
 // main logic
 function evaluateRound(cChoice,pChoice) {
     switch (true) {
@@ -92,17 +79,17 @@ function evaluateRound(cChoice,pChoice) {
         case (cChoice=='paper' && pChoice=='scissors'):
         case (cChoice=='scissors' && pChoice=='rock'):
             playerWin++;
-            console.log(`Player Wins!!`);
+            // console.log(`Player Wins!!`);
             break;
         case (cChoice=='rock' && pChoice=='scissors'):
         case (cChoice=='paper' && pChoice=='rock'):
         case (cChoice=='scissors' && pChoice=='paper'):      
             computerWin++;
-            console.log(`Computer Wins..`);    
+            // console.log(`Computer Wins..`);    
             break;
         case (cChoice==pChoice):      
             drawOutcome++;
-            console.log(`Draw`);
+            // console.log(`Draw`);
             break;
         default:
             console.log(`::ERROR:: something went wrong in evaluateRound()`);
@@ -111,7 +98,8 @@ function evaluateRound(cChoice,pChoice) {
     roundsPlayed++;
     roundCredits--;
     checkOutcomeVariance();
-    logRound(); 
+    checkForWinner();
+    updateResults(); 
     return ;
 }
 //silent anti-cheat
@@ -134,13 +122,47 @@ function resetOutcomes() {
     playerChoice='';
     computerChoice='';
     roundCredits=0;
+    winner = '';
     console.log(`::outcomes reset`);
 }
-function logRound() {
-        console.log(`::Round Results::
-            ROUNDS PLAYED: ${roundsPlayed}
-            playerWin ${playerWin} | computerWin ${computerWin} | drawOutcome = ${drawOutcome} | credits = ${roundCredits}`);    
+
+
+function getPct(stat) {
+    return Math.floor(stat/roundsPlayed*100)    
 }
+function updateResults() {
+const resultsPara = document.querySelector("#results-para");
+const credits = document.querySelector("#credits")
+resultsPara.textContent = '';
+
+let currentCredits = `Played: ${roundsPlayed}  |  CREDITS = ${roundCredits}`;
+    credits.textContent = currentCredits;
+let playerResult = document.createElement('p');
+    playerResult.textContent = `Player Win (${getPct(playerWin)}%): ${playerWin}`;
+    playerResult.setAttribute('class', 'resultPara');
+let computerResult = document.createElement('p');
+    computerResult.textContent = `Computer Win (${getPct(computerWin)}%): ${computerWin}`;
+    computerResult.setAttribute('class', 'resultPara');
+let drawResult = document.createElement('p');
+    drawResult.textContent = `Draw (${getPct(drawOutcome)}%): ${drawOutcome}`;
+    drawResult.setAttribute('class', 'resultPara');
+if (winner!=='') {
+let winnerResult = document.createElement('h5')
+    winnerResult.textContent = `First to 5 wins was ${winner} but you can keep playing!`
+    resultsPara.appendChild(winnerResult);
+    }
+    resultsPara.appendChild(playerResult);
+    resultsPara.appendChild(computerResult);
+    resultsPara.appendChild(drawResult);
+}
+
+function checkForWinner() {
+    if (winner != '') { return ;}
+    if (computerWin > 4 ) { winner = 'Computer'; }
+    if (playerWin > 4 ) { winner = 'player'; }            
+    return
+}
+
 function checkCredits() {
     if (roundCredits==0) {
         console.log(`CREDITS = ${roundCredits}`);
@@ -159,10 +181,40 @@ function runGame() {
         return;
     }
     genComputerChoice();
-    promptPlayer();
-    evaluateRound(computerChoice,playerChoice); 
-    runGame(); 
+    evaluateRound(computerChoice,playerChoice);
+    resetPlayerChoice(); 
+    // runGame(); //this runs all games until credits out
 }
 
-// GAME START
-runGame();
+
+
+
+const rockButton  = document.querySelector("#rock");
+const paperButton  = document.querySelector("#paper");
+const scissorsButton  = document.querySelector("#scissors");
+
+const choices = document.querySelector(".choices");
+
+choices.addEventListener("click", (e)=>{
+    let target = e.target;
+    // console.log(target);
+    switch (target.id) {
+        case 'rock':
+            playerChoice = 'rock'    
+            // console.log(playerChoice);  
+            runGame();  
+            break;
+        case 'paper':
+            playerChoice = 'paper'    
+            runGame();  
+            break;
+        case 'scissors':
+            playerChoice = 'scissors'    
+            runGame();  
+            break;                            
+        default:
+            // console.log("unexpected happened");
+            break;
+    }    
+})
+

@@ -8,23 +8,33 @@
 </head>
 <body>
 
-    <p>
-        Open Console (F12)
-    </p>
-
     <h3 class="hideme">Computer will choose fresh every round</h3>
     <p class="hideme">Mobile Break point is 500px</p>
     <div class="mobile">
         You are on Mobile View
     </div>
+    <div class="button-container choices">
+        <button class="button" id="rock">rock</button>
+        <button class="button" id="paper">paper</button>
+        <button class="button" id="scissors">scissors</button>
+    </div>
+
+
     <div class="button-container">
         <button class="button" id="reset">Reset</button>
-        <button class="button" id="promptPlayer">New Round</button>
-        <button class="button" id="addFiveRounds">+5 Rounds</button>
+        <button class="button" id="addOneCredit">New Round</button>
+        <button class="button" id="addFiveCredits">+5 Rounds</button>
     </div>
+    <div class="results">
+        <h2 id="credits">::Round Results:: </h2>
+        <p id="results-para">Waiting for results...</p>
+    </div>
+
         <p class="hideme" id="footer">
             https://github.com/GNouchi/rock-paper-scissors
         </p>    
+
+
 </body>
 <script src="script.js"></script>
 </html>
